@@ -1,0 +1,102 @@
+import React, { useState } from "react";
+import { Mail, Github, Linkedin, Instagram } from "lucide-react";
+
+export default function App() {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert("Message sent successfully!\n\n" + JSON.stringify(formData, null, 2));
+    setFormData({ name: '', email: '', message: '' });
+  };
+
+  return (
+    <div className="font-sans bg-pink-50 text-gray-800">
+      {/* Header */}
+      <header className="bg-white shadow-md sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-pink-600">Bhagya S Lal</h1>
+          <nav className="space-x-4">
+            <a href="#about" className="hover:text-pink-600">About</a>
+            <a href="#skills" className="hover:text-pink-600">Skills</a>
+            <a href="#projects" className="hover:text-pink-600">Projects</a>
+            <a href="#contact" className="hover:text-pink-600">Contact</a>
+          </nav>
+        </div>
+      </header>
+
+      {/* About Section */}
+      <section id="about" className="py-16 px-4 max-w-4xl mx-auto text-center">
+        <h2 className="text-4xl font-bold text-pink-600 mb-4">Hey, I'm Bhagya 💖</h2>
+        <p className="text-lg leading-relaxed">
+          A creative tech enthusiast who loves blending aesthetics with logic ✨<br />
+          I'm a front-end developer with a knack for pixel-perfect designs and smooth user experiences. Whether it's crafting charming interfaces or bringing ideas to life through code, I'm all about making the web a more beautiful place — one component at a time 💅👩‍💻<br />
+          Coffee lover, design dreamer, and always chasing that perfect pink hue 💗
+        </p>
+      </section>
+
+      {/* Skills Section */}
+      <section id="skills" className="bg-white py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-pink-600 mb-8">My Superpowers</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+            <div className="bg-pink-100 p-4 rounded-xl shadow">React</div>
+            <div className="bg-pink-100 p-4 rounded-xl shadow">Tailwind CSS</div>
+            <div className="bg-pink-100 p-4 rounded-xl shadow">JavaScript</div>
+            <div className="bg-pink-100 p-4 rounded-xl shadow">Node.js</div>
+            <div className="bg-pink-100 p-4 rounded-xl shadow">Git & GitHub</div>
+            <div className="bg-pink-100 p-4 rounded-xl shadow">Creative Thinking</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section */}
+      <section id="projects" className="py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-pink-600 mb-8">Projects I'm Proud Of 💼</h2>
+          <div className="space-y-6">
+            <div className="bg-white shadow-md p-6 rounded-xl border-l-4 border-pink-400 transition-transform hover:scale-105">
+              <h3 className="text-xl font-bold text-pink-700">Study Buddy</h3>
+              <p className="text-gray-700">A cute productivity tracker and task planner built with React — perfect for planning your study goals and slaying deadlines 💻🎀</p>
+              <a href="https://example.com/study-buddy" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:underline mt-2 inline-block">View Project</a>
+            </div>
+            <div className="bg-white shadow-md p-6 rounded-xl border-l-4 border-pink-400 transition-transform hover:scale-105">
+              <h3 className="text-xl font-bold text-pink-700">Wellness Tracker</h3>
+              <p className="text-gray-700">A self-care web app that lets you log moods, habits, and gratitude notes — because wellness is everything 🧘‍♀️🌸</p>
+              <a href="https://example.com/wellness-tracker" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:underline mt-2 inline-block">View Project</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="bg-white py-16 px-4">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-pink-600 mb-8">Let's Connect 💌</h2>
+          <form className="space-y-4 animate-fade-in" onSubmit={handleSubmit}>
+            <input name="name" type="text" placeholder="Your Name" value={formData.name} onChange={handleChange} className="w-full p-3 border rounded-xl focus:border-pink-400" required />
+            <input name="email" type="email" placeholder="Your Email" value={formData.email} onChange={handleChange} className="w-full p-3 border rounded-xl focus:border-pink-400" required />
+            <textarea name="message" placeholder="Your Message" rows="5" value={formData.message} onChange={handleChange} className="w-full p-3 border rounded-xl focus:border-pink-400" required></textarea>
+            <button type="submit" className="bg-pink-600 text-white px-6 py-3 rounded-xl hover:bg-pink-700 transition-all duration-300">Send Message</button>
+          </form>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-pink-100 py-6 text-center">
+        <div className="flex justify-center space-x-6 mb-2">
+          <a href="mailto:you@example.com" className="text-pink-600"><Mail className="w-5 h-5" /></a>
+          <a href="https://github.com/yourprofile" className="text-pink-600"><Github className="w-5 h-5" /></a>
+          <a href="https://linkedin.com/in/yourprofile" className="text-pink-600"><Linkedin className="w-5 h-5" /></a>
+          <a href="https://www.instagram.com/babxzbeee.ss/" className="text-pink-600"><Instagram className="w-5 h-5" /></a>
+        </div>
+        <p className="text-sm text-pink-700">&copy; {new Date().getFullYear()} Bhagya S Lal. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
