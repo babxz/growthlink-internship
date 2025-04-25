@@ -1,0 +1,125 @@
+// NOTE: This is a simplified version of the quiz platform with category support, leaderboard, and analytics. Login prompt has been removed for a smoother experience.
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const categories = ['HTML', 'CSS', 'JavaScript', 'React'];
+
+const dummyQuestions = {
+  HTML: [
+    {
+      id: 1,
+      question: 'What does HTML stand for?',
+      options: ['Hyper Text Markup Language', 'Home Tool Markup Language', 'Hyperlinks and Text Markup Language', 'Hyper Tool Modern Language'],
+      answer: 'Hyper Text Markup Language'
+    }
+  ],
+  CSS: [
+    {
+      id: 2,
+      question: 'Which language is used for styling web pages?',
+      options: ['HTML', 'JQuery', 'CSS', 'XML'],
+      answer: 'CSS'
+    }
+  ],
+  JavaScript: [
+    {
+      id: 3,
+      question: 'Which is not a JavaScript framework?',
+      options: ['React', 'Angular', 'Vue', 'Laravel'],
+      answer: 'Laravel'
+    }
+  ],
+  React: [
+    {
+      id: 4,
+      question: 'What hook is used for managing state in functional components?',
+      options: ['useState', 'useEffect', 'useContext', 'useReducer'],
+      answer: 'useState'
+    }
+  ]
+};
+
+export default function FullQuizApp() {
+  const [category, setCategory] = useState('HTML');
+  const [questions, setQuestions] = useState([]);
+  const [current, setCurrent] = useState(0);
+  const [score, setScore] = useState(0);
+  const [selected, setSelected] = useState('');
+  const [finished, setFinished] = useState(false);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [analytics, setAnalytics] = useState({});
+
+  useEffect(() => {
+    setQuestions(dummyQuestions[category] || []);
+  }, [category]);
+
+  useEffect(() => {
+    if (finished) {
+      const playerName = prompt("Enter your name to save your score 📝") || "Anonymous";
+      const payload = { name: playerName, score, category };
+      axios.post('/api/submit-score', payload).then(() => {
+        axios.get('/api/leaderboard').then(res => setLeaderboard(res.data));
+        axios.get('/api/analytics').then(res => setAnalytics(res.data));
+      });
+    }
+  }, [finished]);
+
+  const handleAnswer = () => {
+    if (selected === questions[current].answer) setScore(score + 1);
+    if (current < questions.length - 1) {
+      setCurrent(current + 1);
+      setSelected('');
+    } else {
+      setFinished(true);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-200 flex flex-col items-center p-6">
+      <h1 className="text-4xl font-extrabold text-pink-600 mb-4">💖 Quiz Platform</h1>
+
+      <div className="mb-4">
+        <label className="mr-2 text-purple-700 font-semibold">Choose Category:</label>
+        <select value={category} onChange={e => setCategory(e.target.value)} className="p-2 rounded-full border">
+          {categories.map(cat => <option key={cat}>{cat}</option>)}
+        </select>
+      </div>
+
+      {!finished && questions.length > 0 ? (
+        <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-xl">
+          <h2 className="text-lg font-semibold text-purple-700 mb-4">Question {current + 1}</h2>
+          <p className="text-xl text-pink-800 mb-4">{questions[current].question}</p>
+          {questions[current].options.map((option, idx) => (
+            <button key={idx} onClick={() => setSelected(option)} className={`block w-full text-left py-2 px-4 my-1 rounded-full border ${selected === option ? 'bg-pink-400 text-white' : 'bg-white text-pink-800 border-pink-300'}`}>{option}</button>
+          ))}
+          <button onClick={handleAnswer} disabled={!selected} className="mt-4 bg-purple-400 text-white px-6 py-2 rounded-full">Next</button>
+        </div>
+      ) : finished ? (
+        <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-xl text-center">
+          <h2 className="text-2xl font-bold text-pink-600">All done 🎉</h2>
+          <p className="text-lg mt-2 text-purple-800">Score: {score}</p>
+          <p className="mt-4 font-semibold">{score >= 3 ? 'You earned a star! 🌟' : 'Nice try! 🌈'}</p>
+
+          <div className="mt-6">
+            <h3 className="font-bold text-pink-500 mb-2">Leaderboard 🏆</h3>
+            <ul className="text-left">
+              {leaderboard.map((entry, idx) => (
+                <li key={idx}>{idx + 1}. {entry.name} - {entry.score}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="font-bold text-pink-500 mb-2">Analytics 📊</h3>
+            <pre className="bg-pink-50 p-2 rounded text-sm text-purple-700">
+              {JSON.stringify(analytics, null, 2)}
+            </pre>
+          </div>
+
+          <button onClick={() => window.location.reload()} className="mt-6 bg-pink-500 text-white px-6 py-2 rounded-full">Play Again 🔁</button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
